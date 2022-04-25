@@ -2,6 +2,8 @@
 # Correlationship between rasters -----------------------------------------
 # -------------------------------------------------------------------------
 
+# Install or load libraries -----------------------------------------------
+
 if(!require(raster)){install.packages("raster")}
 
 # Load raster files

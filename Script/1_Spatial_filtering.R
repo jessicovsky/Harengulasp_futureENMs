@@ -2,6 +2,8 @@
 # Filtering data ----------------------------------------------------------
 # -------------------------------------------------------------------------
 
+# Install or load libraries -----------------------------------------------
+
 if(!require(spThin)){install.packages("spThin")}
 
 # Load occurrences --------------------------------------------------------
@@ -26,6 +28,7 @@ km   <- c(50, 10)
 
 # Spatial filtering -------------------------------------------------------
 
+set.seed(1)
 for(i in seq_along(N_S))
 {
 filter   <- spThin::thin(loc.data  = N_S[[i]], 
@@ -33,7 +36,7 @@ filter   <- spThin::thin(loc.data  = N_S[[i]],
                          long.col = "Longitude", 
                          spec.col = "Species",
                          thin.par = km[i], #Buffer in km
-                         reps     = 1000, 
+                         reps     = 10000, 
                          locs.thinned.list.return = TRUE, 
                          write.files = TRUE, 
                          max.files   = 1, # número de archivos filtrados

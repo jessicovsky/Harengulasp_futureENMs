@@ -2,14 +2,11 @@
 # Model Calibration and Projection Current Scenario -----------------------
 # -------------------------------------------------------------------------
 
+# Install or load libraries -----------------------------------------------
+
 if (!require(ENMeval)) install.packages("ENMeval")
-if (!require(dismo)) install.packages("dismo")
 if (!require(raster)) install.packages("raster")
-if (!require(rJava)) install.packages("rJava")
-if (!require(kuenm)) install.packages("kuenm")
-if (!require(oce)) install.packages("oce")
 if (!require(dplyr)) install.packages("dplyr")
-if (!require(ENMTools)) install.packages("ENMTools")
 
 # Load occurrences --------------------------------------------------------
 
@@ -22,6 +19,7 @@ env <- stack(list.files('M_variables/', full.names= 'TRUE', pattern = '.tif'))
 
 # Select background -------------------------------------------------------
 
+set.seed(1)
 bg            <- dismo::randomPoints(env, n = 10000) %>% as.data.frame()
 colnames(bg)  <- colnames(occ)
 
@@ -57,12 +55,12 @@ write.csv(opt.seq, "Results/Optimal_model.csv", row.names = FALSE)
 
 # Save importance of variables
 
-Importance <- e.mx.l@variable.importance$fc.LQHP_rm.3
+Importance <- e.mx.l@variable.importance$fc.LQHP_rm.1.5
 write.csv(Importance, "Results/Importance_Har_sp.csv")
 
 # Save raster
 
-writeRaster(e.mx.l@predictions$fc.LQHP_rm.3,
+writeRaster(e.mx.l@predictions$fc.LQHP_rm.1.5,
             'Results/Suitability_result_Har_sp.tif', overwrite = TRUE)
 
 # Projections -------------------------------------------------------------
@@ -75,10 +73,15 @@ for(i in seq_along(subfolder))
 {
 f        <- paste0('G_variables/', subfolder[i])
 ras[[i]] <- stack(list.files(f, pattern = 'tif', full.names = TRUE))
-pre      <- dismo::predict(e.mx.l@models$fc.LQHP_rm.3, ras[[i]])
+pre      <- dismo::predict(e.mx.l@models$fc.LQHP_rm.1.5, ras[[i]])
 file     <- paste0('Results/', names[i], '.tif')
 writeRaster(pre, filename = file, overwrite = TRUE)
 }
+
+# Delete auxiliary files created
+
+remove <- list.files('Results/', pattern = 'aux', full.names = TRUE)
+file.remove(remove)
 
 # Suitability differences -------------------------------------------------
 

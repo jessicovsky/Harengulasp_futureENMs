@@ -1,28 +1,33 @@
-library(pacman)
-pacman::p_load(marmap, oce, raster, oceanmap, tmap,
-               tmaptools, rgdal, maps, rworldmap, 
-               mapplots, geoR, rworldxtra, tmap, raster, 
-               viridis, rworldmap, colorRamps, rgdal)
-
-# Load map
-
-map <- getMap(resolution = "high")
-
 # -------------------------------------------------------------------------
 # Figures -----------------------------------------------------------------
 # -------------------------------------------------------------------------
 
+# Install or load libraries -----------------------------------------------
 
-# Create folder to save figures
+if (!require(ENMeval)) install.packages("ENMeval")
+if (!require(raster)) install.packages("raster")
+if (!require(oce)) install.packages("oce")
+if (!require(rworldmap)) install.packages("rworldmap")
+if (!require(dismo)) install.packages("dismo")
+if (!require(geoR)) install.packages("geoR")
+
+# Load map ----------------------------------------------------------------
+
+map <- getMap(resolution = "high")
+
+
+
+# Create folder to save figures -------------------------------------------
 
 ifelse(!dir.exists(file.path('Figures')), 
        dir.create(file.path('Figures')), FALSE)
 
+# Response curves ---------------------------------------------------------
+
+# Select environmental variables to plot
 
 select <- c("depth", "SSSmean", "SSSran",  "SSTmean",
             "Velmean")
-
-# Response curves ---------------------------------------------------------
 
 pdf('Figures/Response_curves.pdf', width = 12)
 
@@ -43,9 +48,9 @@ dev.off()
 # Load files
 
 scenarios <- list.files('Results/', pattern = '.tif', full.names = TRUE)
-scenarios <- scenarios[c(1,12,14,15)]
-sta       <- stack(scenarios)
 title     <- c('Present', 'RCP 2.6', 'RCP 6.0', 'RCP 8.5')
+scenarios <- scenarios[c(1,10,11,12)]
+sta       <- stack(scenarios)
 
 pdf('Figures/Suitability_map.pdf')
 
@@ -149,7 +154,7 @@ dev.off()
 
 # Most dissimilar ---------------------------------------------------------
 
-pdf('Results/MOD.pdf')
+pdf('Figures/MOD.pdf')
 
 scenarios <- list.files('Results/', pattern = 'MOD', full.names = TRUE)
 sta       <- stack(scenarios)
